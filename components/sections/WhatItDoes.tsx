@@ -98,9 +98,19 @@ export function WhatItDoes() {
         <p className="text-center text-xs font-semibold uppercase tracking-wide text-[var(--color-slate-400)]">
           Sample findings
         </p>
-        <ul className="mt-4 space-y-4">
-          {SAMPLE_FINDINGS.map((f) => (
-            <li key={f.element}>
+        <ul className="mt-4">
+          {SAMPLE_FINDINGS.map((f, i) => (
+            <li
+              key={f.element}
+              className={[
+                'sticky motion-reduce:static motion-reduce:top-auto',
+                i === 0 && 'top-20',
+                i === 1 && 'top-24 mt-6',
+                i === 2 && 'top-28 mt-6',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
               <SampleFindingCard {...f} animateElement />
             </li>
           ))}

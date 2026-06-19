@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import { CTAButton } from '@/components/CTAButton';
 import { Reveal } from '@/components/Reveal';
+import { StepVideo } from '@/components/StepVideo';
 import {
   Accordion,
   AccordionContent,
@@ -29,6 +30,9 @@ interface Step {
   id?: string;
   cta?: boolean;
   compat?: boolean;
+  video?: string;
+  poster?: string;
+  image?: string;
 }
 
 const STEPS: Step[] = [
@@ -41,6 +45,7 @@ const STEPS: Step[] = [
     ),
     body: `${SITE_NAME} installs as a standard Chrome extension. No account, no sign-in required to start.`,
     screenshot: 'Chrome Web Store listing with Install button',
+    image: '/screenshots/step-1.png',
     cta: true,
     compat: true,
   },
@@ -52,6 +57,8 @@ const STEPS: Step[] = [
     ),
     body: `Navigate to the app you want to audit. ${SITE_NAME} detects the Bubble editor automatically and injects a floating Audit button.`,
     screenshot: 'Bubble editor with a project open',
+    video: '/screenshots/step-2.mp4',
+    poster: '/screenshots/step-2-poster.jpg',
   },
   {
     title: (
@@ -61,6 +68,8 @@ const STEPS: Step[] = [
     ),
     body: `Launch from either the floating button injected into the editor or the ${SITE_NAME} popup in your Chrome toolbar.`,
     screenshot: 'Floating Audit button overlay on the Bubble editor',
+    video: '/screenshots/step-3.mp4',
+    poster: '/screenshots/step-3-poster.jpg',
   },
   {
     title: (
@@ -70,6 +79,8 @@ const STEPS: Step[] = [
     ),
     body: `${SITE_NAME} walks your app structure in-page, redacts known secret patterns in your browser, and runs a deterministic TypeScript rules engine in a Web Worker. Nothing is uploaded.`,
     screenshot: 'Audit modal showing local scan progress',
+    video: '/screenshots/step-4.mp4',
+    poster: '/screenshots/step-4-poster.jpg',
   },
   {
     title: (
@@ -79,6 +90,8 @@ const STEPS: Step[] = [
     ),
     body: 'Each finding names the element, the page it lives on, a relative severity, and an actionable fix. Free preview shows the top 5 findings and a summary.',
     screenshot: 'Findings list with severity chips and fix snippets',
+    video: '/screenshots/step-5.mp4',
+    poster: '/screenshots/step-5-poster.jpg',
   },
   {
     title: (
@@ -88,6 +101,8 @@ const STEPS: Step[] = [
     ),
     body: 'Pick a tier inside the extension to unlock the full findings list and fixes. Re-audits stay free while your subscription is active.',
     screenshot: 'Tier picker inside the extension',
+    video: '/screenshots/step-6.mp4',
+    poster: '/screenshots/step-6-poster.jpg',
   },
 ];
 
@@ -177,17 +192,48 @@ export default function HowItWorksPage() {
                 )}
                 {step.compat && <InlineBrowserCompat />}
               </div>
-              <div
-                className={
-                  'aspect-[3/2] w-full max-w-[600px] grid place-items-center rounded-[var(--radius-cta)] bg-slate-100 px-6 text-center text-sm text-[var(--color-slate-400)] ring-1 ring-black/[0.08] ' +
-                  (index % 2 === 1 ? 'md:order-1' : '')
-                }
-                role="img"
-                aria-label={`Screenshot placeholder: ${step.screenshot}`}
-                style={{ width: '100%', height: 'auto' }}
-              >
-                [Screenshot: {step.screenshot}]
-              </div>
+              {step.video ? (
+                <div
+                  className={
+                    'aspect-[3/2] w-full max-w-[600px] overflow-hidden rounded-[var(--radius-cta)] bg-slate-100 shadow-lg shadow-indigo-500/15 ring-1 ring-indigo-500/30 ' +
+                    (index % 2 === 1 ? 'md:order-1' : '')
+                  }
+                >
+                  <StepVideo
+                    src={step.video}
+                    poster={step.poster}
+                    title={step.screenshot}
+                  />
+                </div>
+              ) : step.image ? (
+                <div
+                  className={
+                    'relative aspect-[3/2] w-full max-w-[600px] overflow-hidden rounded-[var(--radius-cta)] bg-slate-100 shadow-lg shadow-indigo-500/15 ring-1 ring-indigo-500/30 ' +
+                    (index % 2 === 1 ? 'md:order-1' : '')
+                  }
+                >
+                  <Image
+                    src={step.image}
+                    alt={`Screenshot: ${step.screenshot}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                    priority={index === 0}
+                  />
+                </div>
+              ) : (
+                <div
+                  className={
+                    'aspect-[3/2] w-full max-w-[600px] grid place-items-center overflow-hidden rounded-[var(--radius-cta)] bg-slate-100 px-6 text-center text-sm text-[var(--color-slate-400)] shadow-lg shadow-indigo-500/15 ring-1 ring-indigo-500/30 ' +
+                    (index % 2 === 1 ? 'md:order-1' : '')
+                  }
+                  role="img"
+                  aria-label={`Screenshot placeholder: ${step.screenshot}`}
+                  style={{ width: '100%', height: 'auto' }}
+                >
+                  [Screenshot: {step.screenshot}]
+                </div>
+              )}
             </Reveal>
           </li>
         ))}
