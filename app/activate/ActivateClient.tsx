@@ -16,6 +16,16 @@ export function ActivateClient() {
   const params = useSearchParams();
   const licenseKey = params.get('license_key')?.trim() ?? '';
   const status = params.get('status')?.trim().toLowerCase() ?? '';
+  const tierParam = params.get('tier')?.trim().toLowerCase() ?? '';
+  const knownTier: 'solo' | 'agency' | '' =
+    tierParam === 'solo' || tierParam === 'agency' ? tierParam : '';
+
+  const hasRedirectMarker = !!(
+    params.get('status') ||
+    params.get('subscription_id') ||
+    params.get('email')
+  );
+  const isSuccess = !!licenseKey && (status === 'active' || status === '');
 
   const [copied, setCopied] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -56,14 +66,15 @@ export function ActivateClient() {
         className="flex flex-1 items-center justify-center px-4 pb-12 md:pb-16"
       >
         <div className="w-full max-w-xl">
-          {licenseKey ? (
+          {isSuccess ? (
             <ActiveLicensePanel
               licenseKey={licenseKey}
-              status={status}
               copied={copied}
               onCopy={copyKey}
               inputRef={inputRef}
             />
+          ) : hasRedirectMarker ? (
+            <PaymentIncompletePanel knownTier={knownTier} />
           ) : (
             <MissingLicensePanel />
           )}
@@ -75,7 +86,6 @@ export function ActivateClient() {
 
 interface ActiveLicensePanelProps {
   licenseKey: string;
-  status: string;
   copied: boolean;
   onCopy: () => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -83,13 +93,10 @@ interface ActiveLicensePanelProps {
 
 function ActiveLicensePanel({
   licenseKey,
-  status,
   copied,
   onCopy,
   inputRef,
 }: ActiveLicensePanelProps) {
-  const isActive = status === 'active' || status === '';
-
   return (
     <section
       className="mt-8 rounded-[var(--radius-cta)] bg-white p-8 ring-1 ring-black/[0.08]"
@@ -101,28 +108,9 @@ function ActiveLicensePanel({
       >
         Your {SITE_NAME} license is ready
       </h1>
-      {isActive ? (
-        <p className="mt-2 text-sm text-[var(--color-slate-500)]">
-          Copy your license key and paste it into the {SITE_NAME} extension to activate.
-        </p>
-      ) : (
-        <p className="mt-2 inline-flex items-start gap-2 text-sm text-[var(--color-slate-500)]">
-          <AlertCircle
-            className="mt-0.5 h-4 w-4 flex-none text-[var(--color-indigo)]"
-            aria-hidden="true"
-          />
-          <span>
-            Status: <strong>{status}</strong>. If activation fails, contact{' '}
-            <a
-              href={`mailto:${SUPPORT_EMAIL}`}
-              className="text-[var(--color-indigo)] underline underline-offset-2 hover:text-[var(--color-indigo-hover)]"
-            >
-              {SUPPORT_EMAIL}
-            </a>
-            .
-          </span>
-        </p>
-      )}
+      <p className="mt-2 text-sm text-[var(--color-slate-500)]">
+        Copy your license key and paste it into the {SITE_NAME} extension to activate.
+      </p>
 
       <div className="mt-6">
         <label
@@ -235,6 +223,75 @@ function MissingLicensePanel() {
       </div>
       <p className="mt-6 text-xs text-[var(--color-slate-400)]">
         Already subscribed and can&rsquo;t find your key? Email{' '}
+        <a
+          href={`mailto:${SUPPORT_EMAIL}`}
+          className="text-[var(--color-indigo)] underline underline-offset-2 hover:text-[var(--color-indigo-hover)]"
+        >
+          {SUPPORT_EMAIL}
+        </a>
+        .
+      </p>
+    </section>
+  );
+}
+
+interface PaymentIncompletePanelProps {
+  knownTier: '' | 'solo' | 'agency';
+}
+
+function PaymentIncompletePanel({ knownTier }: PaymentIncompletePanelProps) {
+  const heading =
+    knownTier === 'solo'
+      ? 'Your Solo payment didn’t go through.'
+      : knownTier === 'agency'
+        ? 'Your Agency payment didn’t go through.'
+        : 'Your payment didn’t go through.';
+  const retryHref =
+    knownTier === 'solo'
+      ? '/pricing#tier-solo'
+      : knownTier === 'agency'
+        ? '/pricing#tier-agency'
+        : '/pricing';
+  const retryLabel =
+    knownTier === 'solo'
+      ? 'Try Solo again'
+      : knownTier === 'agency'
+        ? 'Try Agency again'
+        : 'Try again';
+
+  return (
+    <section
+      className="mt-8 rounded-[var(--radius-cta)] bg-white p-8 ring-1 ring-black/[0.08]"
+      aria-labelledby="activate-incomplete-heading"
+    >
+      <h1
+        id="activate-incomplete-heading"
+        className="text-2xl font-semibold tracking-tight text-[var(--color-slate-900)] md:text-3xl"
+      >
+        {heading}
+      </h1>
+      <p className="mt-3 inline-flex items-start gap-2 text-sm text-[var(--color-slate-500)]">
+        <AlertCircle
+          className="mt-0.5 h-4 w-4 flex-none text-[var(--color-indigo)]"
+          aria-hidden="true"
+        />
+        <span>
+          This sometimes happens &mdash; a card declines, the tab closes, the bank flags
+          the charge. No subscription was created.
+        </span>
+      </p>
+      <p className="mt-2 text-sm text-[var(--color-slate-500)]">
+        You can try again now, or your card issuer may auto-retry shortly.
+      </p>
+
+      <div className="mt-6">
+        <CTAButton href={retryHref} external={false} size="md">
+          {retryLabel}
+        </CTAButton>
+      </div>
+
+      <p className="mt-8 text-xs text-[var(--color-slate-400)]">
+        Need a hand? Email{' '}
         <a
           href={`mailto:${SUPPORT_EMAIL}`}
           className="text-[var(--color-indigo)] underline underline-offset-2 hover:text-[var(--color-indigo-hover)]"
