@@ -18,14 +18,12 @@ export const PRICING = {
     name: 'Solo',
     priceMonthly: 19,
     devices: 1,
-    brandedExport: false,
     tagline: 'For solo developers auditing their own apps.',
   },
   agency: {
     name: 'Agency',
     priceMonthly: 49,
     devices: 5,
-    brandedExport: true,
     tagline: 'For agencies auditing client apps.',
   },
 } as const;

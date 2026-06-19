@@ -25,7 +25,7 @@ const TIERS: Tier[] = [
       { label: 'Actionable fixes for every finding', included: true },
       { label: 'Unlimited re-audits', included: true },
       { label: `${PRICING.solo.devices} device`, included: true },
-      { label: 'Branded export', included: PRICING.solo.brandedExport },
+      { label: 'Unbranded CSV export', included: true },
     ],
   },
   {
@@ -39,7 +39,7 @@ const TIERS: Tier[] = [
       { label: 'Actionable fixes for every finding', included: true },
       { label: 'Unlimited re-audits', included: true },
       { label: `${PRICING.agency.devices} devices`, included: true },
-      { label: 'Branded export', included: PRICING.agency.brandedExport },
+      { label: 'Branded PDF report', included: true },
     ],
   },
 ];
@@ -78,9 +78,10 @@ export function Pricing({ id = 'pricing', className, includeHeading = true }: Pr
         {TIERS.map((tier) => (
           <article
             key={tier.key}
+            id={`tier-${tier.key}`}
             aria-labelledby={`${id}-${tier.key}-name`}
             className={[
-              'card-hover flex flex-col rounded-[var(--radius-cta)] bg-white p-8 ring-1',
+              'card-hover flex scroll-mt-20 flex-col rounded-[var(--radius-cta)] bg-white p-8 ring-1',
               tier.emphasized
                 ? 'ring-[var(--color-indigo)]/30 shadow-sm'
                 : 'ring-black/[0.08]',

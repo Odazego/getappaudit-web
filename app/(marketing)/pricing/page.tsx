@@ -50,7 +50,7 @@ export default function PricingPage() {
       <header className="mx-auto max-w-2xl text-center">
         <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-slate-900)] md:text-5xl">
           Pricing that follows the{' '}
-          <span className="text-[var(--color-indigo)]">savings</span>.
+          <span className="text-[var(--color-indigo)]">patterns</span>.
         </h1>
         <p className="mt-3 text-[var(--color-slate-500)]">
           Monthly subscription, cancel anytime. Re-audits are free for the life of your
