@@ -18,7 +18,8 @@ const STEPS: Step[] = [
     icon: Download,
     title: 'Install AppAudit for Chrome',
     description: 'One-click install from the Chrome Web Store. No account, no sign-in to start.',
-    image: '/screenshots/step-1.png',
+    video: '/screenshots/step-1.mp4',
+    poster: '/screenshots/step-1-poster.jpg',
   },
   {
     icon: MousePointerClick,

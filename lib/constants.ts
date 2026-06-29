@@ -7,9 +7,8 @@ export const SITE_TAGLINE = 'Find the patterns inflating your Bubble bill';
 export const SITE_DESCRIPTION =
   'A local-first Chrome extension that scans your Bubble app and surfaces the patterns inflating your Workload Unit bill. Runs entirely in your browser — no AI, no backend, your app never leaves the page.';
 
-// Placeholder base — swap in the real listing URL when the Web Store
-// submission is approved.
-export const CHROME_STORE_URL = 'https://chromewebstore.google.com/';
+export const CHROME_STORE_URL =
+  'https://chromewebstore.google.com/detail/appaudit-%E2%80%94-for-bubble/ehakfpjcmkifiefpcikhcdlieampelll';
 
 export const SUPPORT_EMAIL = 'support@getappaudit.com';
 
